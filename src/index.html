@@ -185,15 +185,28 @@ function openModal(){ $('pointModal').classList.add('show');$('pointModal').setA
 function setReference(p){
  const idx=p.reference_index??REF_INDEX[p.id];
  const image=$('referenceImage'),placeholder=$('referencePlaceholder');
+ image.style.backgroundImage='none';
+ placeholder.style.display='flex';
  if(idx===undefined){
-  image.style.backgroundImage='none';placeholder.style.display='flex';$('referenceCaption').textContent='REFERÊNCIA NÃO LOCALIZADA NO PDF DO CLIENTE';return;
+  placeholder.innerHTML='REFERÊNCIA VISUAL<small>Imagem de exemplo não localizada no PDF fornecido</small>';
+  $('referenceCaption').textContent='REFERÊNCIA NÃO DISPONÍVEL NO PDF DO CLIENTE';
+  return;
  }
  const col=idx%3,row=Math.floor(idx/3);
- image.style.backgroundImage='url("'+REF_SHEET+'")';
- image.style.backgroundSize='300% 700%';
- image.style.backgroundPosition=(col*50)+'% '+(row*100/6)+'%';
- placeholder.style.display='none';
- $('referenceCaption').textContent='REFERÊNCIA VISUAL · PDF FAVRETTO · PÁGINA '+(p.source_page||'—');
+ const bg='url("'+REF_SHEET+'")';
+ const test=new Image();
+ test.onload=()=>{
+  image.style.backgroundImage=bg;
+  image.style.backgroundSize='300% 700%';
+  image.style.backgroundPosition=(col*50)+'% '+(row*100/6)+'%';
+  placeholder.style.display='none';
+  $('referenceCaption').textContent='REFERÊNCIA VISUAL · PDF FAVRETTO · PÁGINA '+(p.source_page||'—');
+ };
+ test.onerror=()=>{
+  placeholder.innerHTML='REFERÊNCIA VISUAL<small>Arquivo de referências ainda não publicado</small>';
+  $('referenceCaption').textContent='REFERÊNCIA VISUAL INDISPONÍVEL';
+ };
+ test.src=REF_SHEET+'?v=1';
 }
 function renderModal(){
  const p=points.find(x=>x.id===selected);if(!p)return;
