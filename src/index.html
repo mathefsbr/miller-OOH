@@ -176,14 +176,14 @@ function renderMarkers(){
   m.on('click',()=>choose(p.id,false));markers.set(p.id,m);
  });
 }
-function refresh(){renderList();renderMarkers();updateStats();if(selected&&!points.some(p=>p.id===selected&&ok(p)))selected=null}
+function refresh(){if(selected&&!points.some(p=>p.id===selected&&ok(p))){selected=null;closeModal()}renderList();renderMarkers();updateStats()}
 function fit(){let c=points.filter(p=>p.latitude!=null&&p.longitude!=null&&ok(p)).map(p=>[p.latitude,p.longitude]);if(c.length&&map)map.fitBounds(c,{padding:[35,35],maxZoom:13})}
 function closeModal(){
  $('pointModal').classList.remove('show');$('pointModal').setAttribute('aria-hidden','true');
 }
 function openModal(){ $('pointModal').classList.add('show');$('pointModal').setAttribute('aria-hidden','false'); }
 function setReference(p){
- const idx=REF_INDEX[p.id];
+ const idx=p.reference_index??REF_INDEX[p.id];
  const image=$('referenceImage'),placeholder=$('referencePlaceholder');
  if(idx===undefined){
   image.style.backgroundImage='none';placeholder.style.display='flex';$('referenceCaption').textContent='REFERÊNCIA NÃO LOCALIZADA NO PDF DO CLIENTE';return;
