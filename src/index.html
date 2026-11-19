@@ -1,23 +1,294 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0c0c0d"><title>Miller OOH — Curitiba</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><style>
-:root{color-scheme:dark;--bg:#0c0c0d;--panel:#171719;--line:#303034;--muted:#999;--text:#f5f5f5;--red:#e3262e}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,sans-serif}.wrap{max-width:none;width:auto;margin:0;padding:14px 22px 18px}.top{height:72px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px}.miller{width:132px;height:62px;max-height:62px;object-fit:contain;object-position:left center;display:block;mix-blend-mode:screen}.faw{grid-column:2;width:220px;height:66px;object-fit:contain;display:block;mix-blend-mode:screen}.team{justify-self:end}.title-band{display:block;width:690px;max-width:100%;min-height:0;background:#000;padding:0;margin-top:22px;margin-left:-15px}.project-title{display:block;width:690px;max-width:100%;height:auto;object-fit:contain;mix-blend-mode:normal}.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.btn,.filter{border:1px solid var(--line);background:#242427;color:#ddd;border-radius:7px;padding:7px 10px;font-size:11px;cursor:pointer}.filter.active,.btn.primary{background:var(--red);border-color:var(--red);color:white}.muted{color:var(--muted)}h1{font-size:clamp(25px,2.7vw,38px);line-height:1.05;letter-spacing:-.04em;margin:17px 0 4px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:13px 0}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px}.stat{padding:9px 13px}.stat label{display:block;color:var(--muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase}.stat strong{display:block;font-size:22px}.workspace{display:grid;grid-template-columns:minmax(290px,370px) 1fr;gap:12px;height:calc(100vh - 500px);min-height:360px;max-height:850px}.side,.mapbox{min-height:0;overflow:hidden}.side{display:flex;flex-direction:column}.panelhead{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;flex:0 0 auto}.panelhead h2{font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0}.tools{padding:10px;border-bottom:1px solid var(--line);flex:0 0 auto}input{width:100%;background:#0d0d0e;border:1px solid var(--line);color:white;border-radius:7px;padding:10px}.filters{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.filter{padding:6px 8px;font-size:10px}.list{flex:1;min-height:0;height:auto;overflow:auto;padding:7px}.item{padding:10px;border:1px solid transparent;border-radius:8px;cursor:pointer;margin-bottom:3px}.item:hover{background:#202023}.item.active{background:#2b1719;border-color:#9d272d}.itemtop{display:flex;justify-content:space-between;gap:7px}.item strong{font-size:12px}.pill{font-size:9px;text-transform:uppercase;border-radius:20px;padding:3px 7px;white-space:nowrap;background:#333;color:#ddd}.pill.iconic,.pill.led{background:#591b20;color:#ffb2b5}.pill.sight{background:#3a2a16;color:#ffc46f}.itemmeta{font-size:10px;color:var(--muted);margin-top:3px}.mapbox{position:relative;height:100%}#map{height:100%;width:100%;background:#202023;z-index:1}.maphead{position:absolute;z-index:500;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;pointer-events:none}.maphead>*{pointer-events:auto}.maptitle,.legend{background:#111e;border:1px solid #444;border-radius:8px;padding:8px 10px;backdrop-filter:blur(10px)}.maptitle{font-size:10px;letter-spacing:.1em;text-transform:uppercase}.legend{position:absolute;z-index:500;bottom:10px;left:10px;display:flex;gap:8px;flex-wrap:wrap}.leg{font-size:9px;color:#eee}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px}.details{position:absolute;z-index:600;right:10px;bottom:58px;width:min(280px,calc(100% - 20px));background:#111f;border:1px solid #555;border-radius:9px;padding:12px;display:none}.details.show{display:block}.details h3{margin:0 0 4px;font-size:14px}.details p{font-size:10px;color:#bbb;margin:4px 0}.details a{display:inline-block;margin:7px 6px 0 0;color:white;background:#333;padding:6px 8px;border-radius:5px;text-decoration:none;font-size:10px}.marker{width:17px;height:17px;border-radius:50%;border:3px solid white;box-shadow:0 1px 9px #000b}.marker.iconic{width:23px;height:23px;background:#ff343b;box-shadow:0 0 0 4px #e3262e55}.marker.led{background:#e3262e}.marker.sight{background:#f0a33c}.marker.digital{background:#c8c8cc}.empty{padding:16px;color:#999;font-size:12px}.auth{display:none;position:fixed;inset:0;background:#000b;z-index:2000;align-items:center;justify-content:center;padding:20px}.auth.show{display:flex}.authcard{width:min(400px,100%);background:#171719;border:1px solid #444;border-radius:12px;padding:22px}.authcard p{color:#aaa;font-size:12px}.authcard input{margin:10px 0}.status{background:#222;border:1px solid #444;color:#eee;border-radius:6px;padding:5px;font-size:10px}
+:root{color-scheme:dark;--bg:#0c0c0d;--panel:#171719;--line:#303034;--muted:#999;--text:#f5f5f5;--red:#e3262e}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,sans-serif}.wrap{max-width:none;width:auto;margin:0;padding:14px 22px 18px}.top{height:72px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px}.miller{width:132px;height:62px;max-height:62px;object-fit:contain;object-position:left center;display:block;mix-blend-mode:screen}.faw{grid-column:2;width:220px;height:66px;object-fit:contain;display:block;mix-blend-mode:screen}.team{justify-self:end}.title-band{display:block;width:690px;max-width:100%;min-height:0;background:#000;padding:0;margin-top:22px;margin-left:-15px}.project-title{display:block;width:690px;max-width:100%;height:auto;object-fit:contain;mix-blend-mode:normal}.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.btn,.filter{border:1px solid var(--line);background:#242427;color:#ddd;border-radius:7px;padding:7px 10px;font-size:11px;cursor:pointer}.filter.active,.btn.primary{background:var(--red);border-color:var(--red);color:white}.muted{color:var(--muted)}h1{font-size:clamp(25px,2.7vw,38px);line-height:1.05;letter-spacing:-.04em;margin:17px 0 4px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:13px 0}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px}.stat{padding:9px 13px}.stat label{display:block;color:var(--muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase}.stat strong{display:block;font-size:22px}.workspace{display:grid;grid-template-columns:minmax(290px,370px) 1fr;gap:12px;height:calc(100vh - 500px);min-height:360px;max-height:850px}.side,.mapbox{min-height:0;overflow:hidden}.side{display:flex;flex-direction:column}.panelhead{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;flex:0 0 auto}.panelhead h2{font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin:0}.tools{padding:10px;border-bottom:1px solid var(--line);flex:0 0 auto}input{width:100%;background:#0d0d0e;border:1px solid var(--line);color:white;border-radius:7px;padding:10px}.filters{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.filter{padding:6px 8px;font-size:10px}.list{flex:1;min-height:0;height:auto;overflow:auto;padding:7px}.item{padding:10px;border:1px solid transparent;border-radius:8px;cursor:pointer;margin-bottom:3px}.item:hover{background:#202023}.item.active{background:#2b1719;border-color:#9d272d}.itemtop{display:flex;justify-content:space-between;gap:7px}.item strong{font-size:12px}.pill{font-size:9px;text-transform:uppercase;border-radius:20px;padding:3px 7px;white-space:nowrap;background:#333;color:#ddd}.pill.iconic,.pill.led{background:#591b20;color:#ffb2b5}.pill.sight{background:#3a2a16;color:#ffc46f}.itemmeta{font-size:10px;color:var(--muted);margin-top:3px}.mapbox{position:relative;height:100%}#map{height:100%;width:100%;background:#202023;z-index:1}.maphead{position:absolute;z-index:500;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;pointer-events:none}.maphead>*{pointer-events:auto}.maptitle,.legend{background:#111e;border:1px solid #444;border-radius:8px;padding:8px 10px;backdrop-filter:blur(10px)}.maptitle{font-size:10px;letter-spacing:.1em;text-transform:uppercase}.legend{position:absolute;z-index:500;bottom:10px;left:10px;display:flex;gap:8px;flex-wrap:wrap}.leg{font-size:9px;color:#eee}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px}.details{position:absolute;z-index:600;right:10px;bottom:58px;width:min(280px,calc(100% - 20px));background:#111f;border:1px solid #555;border-radius:9px;padding:12px;display:none}.details.show{display:block}.details h3{margin:0 0 4px;font-size:14px}.details p{font-size:10px;color:#bbb;margin:4px 0}.details a{display:inline-block;margin:7px 6px 0 0;color:white;background:#333;padding:6px 8px;border-radius:5px;text-decoration:none;font-size:10px}.marker{width:17px;height:17px;border-radius:50%;border:3px solid white;box-shadow:0 1px 9px #000b}.marker.iconic{width:23px;height:23px;background:#ff343b;box-shadow:0 0 0 4px #e3262e55}.marker.led{background:#e3262e}.marker.sight{background:#f0a33c}.marker.digital{background:#c8c8cc}.marker.captured-marker{background:#27a76a;box-shadow:0 0 0 4px #27a76a44}.empty{padding:16px;color:#999;font-size:12px}.auth{display:none;position:fixed;inset:0;background:#000b;z-index:2000;align-items:center;justify-content:center;padding:20px}.auth.show{display:flex}.authcard{width:min(400px,100%);background:#171719;border:1px solid #444;border-radius:12px;padding:22px}.authcard p{color:#aaa;font-size:12px}.authcard input{margin:10px 0}.status{background:#222;border:1px solid #444;color:#eee;border-radius:6px;padding:5px;font-size:10px}
 @media(max-width:850px){.wrap{padding:10px}.top{height:64px}.miller{width:105px;height:50px}.faw{width:165px;height:50px}.title-band{width:100%;min-height:0;margin-top:14px;margin-left:0;padding:0}.project-title{width:100%;height:auto;max-height:none}.workspace{grid-template-columns:1fr;height:auto;max-height:none}.mapbox{height:52vh;min-height:350px;grid-row:1}.side{height:55vh;min-height:340px}.list{height:calc(100% - 108px)}.stats{gap:6px}.stat{padding:8px}.stat strong{font-size:19px}}
+
+.status-pill{font-size:9px;text-transform:uppercase;border:1px solid #444;border-radius:20px;padding:3px 7px;color:#ccc;background:#222;white-space:nowrap}
+.status-pill.capturado,.status-badge.capturado,.status-pill.revisado,.status-badge.revisado{background:#153b2c;border-color:#286d4d;color:#a9f1c7}
+.status-pill.em_captacao,.status-badge.em_captacao{background:#3b3016;border-color:#76602b;color:#f6d88d}
+.filter[data-filter="captured"].active{background:#176343;border-color:#176343}
+.item-statusline{display:flex;gap:6px;align-items:center;margin-top:7px;flex-wrap:wrap}
+.point-modal{display:none;position:fixed;inset:0;z-index:3000;align-items:center;justify-content:center;padding:24px}
+.point-modal.show{display:flex}
+.point-modal-backdrop{position:absolute;inset:0;background:#000d;backdrop-filter:blur(8px)}
+.point-modal-card{position:relative;width:min(1020px,100%);max-height:min(90vh,900px);overflow:auto;background:#151517;border:1px solid #414145;border-radius:16px;box-shadow:0 24px 90px #000b}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;border-bottom:1px solid #333}
+.eyebrow{font-size:10px;letter-spacing:.16em;color:#aaa;font-weight:700}
+.modal-header-sub{font-size:11px;color:#777;margin-top:3px}
+.modal-close{width:34px;height:34px;border:1px solid #444;border-radius:50%;background:#222;color:#fff;font-size:25px;line-height:1;cursor:pointer}
+.modal-content{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:20px;padding:20px}
+.reference-column{min-width:0}
+.reference-image{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#252528 center/cover no-repeat;border:1px solid #39393d}
+.reference-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#777;font-size:11px;letter-spacing:.12em;background:linear-gradient(145deg,#202023,#101012)}
+.reference-placeholder small{font-size:10px;letter-spacing:0;margin-top:7px;color:#999}
+.reference-caption{font-size:9px;letter-spacing:.12em;color:#777;margin:8px 0 12px}
+.map-link{display:inline-block;color:#ddd;background:#252528;border:1px solid #414145;border-radius:7px;padding:8px 10px;text-decoration:none;font-size:11px}
+.modal-info{min-width:0}
+.modal-title-row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.modal-title-row h2{font-size:22px;line-height:1.12;margin:0 0 5px}
+.modal-title-row .muted{margin:0;font-size:11px}
+.status-badge{flex:0 0 auto;border:1px solid #49494d;background:#252528;color:#ddd;border-radius:30px;padding:5px 9px;font-size:9px;text-transform:uppercase}
+.modal-fields{display:grid;gap:12px;padding:16px 0;border-bottom:1px solid #333;margin-bottom:14px}
+.modal-fields label,.modal-notes label{font-size:9px;letter-spacing:.13em;color:#85858b;font-weight:700}
+.modal-fields p{font-size:12px;line-height:1.45;margin:4px 0 0;color:#eee}
+.field-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.capture-meta{font-size:10px;color:#8f8f94;line-height:1.5}
+.modal-notes textarea{width:100%;display:block;resize:vertical;min-height:74px;background:#0c0c0d;border:1px solid #3e3e42;color:#f5f5f5;border-radius:8px;padding:10px;font:12px/1.45 Inter,system-ui,sans-serif;margin-top:7px}
+.notes-actions{display:flex;justify-content:flex-end;margin-top:7px}
+.capture-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.capture-actions .btn{padding:10px 12px;font-size:11px}
+.modal-footnote{font-size:10px;color:#777;margin-top:10px}
+.authcard .team-state{color:#c7f3d8}
+@media(max-width:850px){.point-modal{padding:10px;align-items:flex-end}.point-modal-card{width:100%;max-height:94vh;border-radius:14px 14px 0 0}.modal-content{grid-template-columns:1fr;gap:14px;padding:14px}.reference-image{aspect-ratio:16/9}.modal-title-row h2{font-size:19px}.capture-actions{display:grid;grid-template-columns:1fr}.capture-actions .btn{width:100%}}
+@media(min-width:851px){.point-modal-card{overflow:hidden}.modal-content{max-height:calc(min(90vh,900px) - 70px);overflow:auto}}
+
 </style></head><body><main class="wrap">
 <header class="top"><img class="miller" src="/assets/header-miller.png" alt="Miller"><img class="faw" src="/assets/header-faw.png" alt="FAW.digital"><button class="btn team" id="teamBtn">Equipe</button></header>
 <div class="title-band"><img class="project-title" src="/assets/header-title.png" alt="Sistema de captação campanha Miller OOH"></div><h1 id="projectName" class="sr-only">Miller OOH — Curitiba</h1><p class="muted" style="margin:5px 0 0">Mapa de pontos, prioridades e acompanhamento de produção.</p>
 <section class="stats"><div class="stat"><label>Pontos no plano</label><strong id="total">—</strong></div><div class="stat"><label>Prioritários</label><strong id="priority">—</strong></div><div class="stat"><label>Icônicos</label><strong id="iconics">—</strong></div><div class="stat"><label>Com localização</label><strong id="mapped">—</strong></div></section>
-<section class="workspace"><aside class="panel side"><div class="panelhead"><h2>Pontos de captação</h2><span id="shown" class="muted"></span></div><div class="tools"><input id="search" placeholder="Buscar ponto, bairro ou formato..."><div class="filters" id="filters"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="priority">Prioritários</button><button class="filter" data-filter="iconic">Icônicos</button><button class="filter" data-filter="led">LED</button><button class="filter" data-filter="sight">Top Sight</button><button class="filter" data-filter="complementary">Complementares</button></div></div><div class="list" id="pointList"><div class="empty">Carregando pontos...</div></div></aside>
+<section class="workspace"><aside class="panel side"><div class="panelhead"><h2>Pontos de captação</h2><span id="shown" class="muted"></span></div><div class="tools"><input id="search" placeholder="Buscar ponto, bairro ou formato..."><div class="filters" id="filters"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="priority">Prioritários</button><button class="filter" data-filter="iconic">Icônicos</button><button class="filter" data-filter="led">LED</button><button class="filter" data-filter="sight">Top Sight</button><button class="filter" data-filter="complementary">Complementares</button><button class="filter" data-filter="in_progress">Em captação (0)</button><button class="filter" data-filter="captured">Captados (0)</button></div></div><div class="list" id="pointList"><div class="empty">Carregando pontos...</div></div></aside>
 <section class="panel mapbox"><div class="maphead"><div class="maptitle">Mapa de mídia · Curitiba</div><button class="btn" id="fitBtn">Ver todos</button></div><div id="map"></div><div class="legend"><span class="leg"><i class="dot" style="background:#ff343b"></i>Icônico</span><span class="leg"><i class="dot" style="background:#e3262e"></i>LED / prioritário</span><span class="leg"><i class="dot" style="background:#f0a33c"></i>Top Sight</span><span class="leg"><i class="dot" style="background:#c8c8cc"></i>Complementar</span></div><div class="details" id="details"><h3 id="dTitle"></h3><p id="dMeta"></p><p id="dAddress"></p><a id="googleLink" target="_blank" rel="noopener">Abrir no Google Maps ↗</a><a href="#" id="closeDetails">Fechar</a></div></section></section><div style="text-align:right;color:#777;font-size:9px;margin-top:8px;letter-spacing:.08em">FAW.DIGITAL · MILLER OOH CURITIBA</div></main>
+<div class="point-modal" id="pointModal" aria-hidden="true">
+  <div class="point-modal-backdrop" data-close-modal></div>
+  <section class="point-modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <header class="modal-header">
+      <div><span class="eyebrow">FICHA DE CAPTAÇÃO</span><div class="modal-header-sub">Ponto de mídia · Miller OOH Curitiba</div></div>
+      <button class="modal-close" id="closePointModal" aria-label="Fechar">×</button>
+    </header>
+    <div class="modal-content">
+      <div class="reference-column">
+        <div class="reference-image" id="referenceImage"><div class="reference-placeholder" id="referencePlaceholder">REFERÊNCIA VISUAL<br><small>Imagem não disponível no PDF</small></div></div>
+        <div class="reference-caption" id="referenceCaption">IMAGEM DE REFERÊNCIA DO CLIENTE</div>
+        <a id="modalGoogleLink" class="map-link" target="_blank" rel="noopener">Abrir rota / localização no Google Maps ↗</a>
+      </div>
+      <div class="modal-info">
+        <div class="modal-title-row"><div><h2 id="modalTitle"></h2><p id="modalSubtitle" class="muted"></p></div><span class="status-badge" id="modalStatus"></span></div>
+        <div class="modal-fields">
+          <div><label>ENDEREÇO / REFERÊNCIA</label><p id="modalAddress"></p></div>
+          <div class="field-pair"><div><label>FORMATO</label><p id="modalFormat"></p></div><div><label>ETAPA</label><p id="modalStage"></p></div></div>
+          <div class="field-pair"><div><label>PRIORIDADE</label><p id="modalPriority"></p></div><div><label>LOCALIZAÇÃO</label><p id="modalCoords"></p></div></div>
+          <div class="capture-meta" id="captureMeta"></div>
+        </div>
+        <div class="modal-notes"><label for="modalNotes">OBSERVAÇÕES DE CAMPO</label><textarea id="modalNotes" rows="3" placeholder="Condições de acesso, melhor ângulo, obstáculos, orientação de captação..."></textarea><div class="notes-actions" id="notesActions"><button class="btn" id="saveNotes">Salvar observação</button></div></div>
+        <div class="capture-actions" id="captureActions">
+          <button class="btn" id="startCapture">Iniciar captação</button>
+          <button class="btn primary" id="checkinCapture">✓ Confirmar painel captado</button>
+        </div>
+        <div class="modal-footnote" id="modalFootnote">A atualização fica registrada no histórico da equipe.</div>
+      </div>
+    </div>
+  </section>
+</div>
 <div class="auth" id="auth"><div class="authcard"><h2>Acesso da equipe</h2><p>Entre com o e-mail autorizado para atualizar o status dos pontos.</p><input type="email" id="email" value="mathefs@gmail.com" readonly><button class="btn primary" id="sendLink">Enviar link de acesso</button><p id="authMsg">O acesso de cliente permanece somente para visualização.</p><button class="btn" id="closeAuth">Fechar</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script><script>
-const URL='https://mvcigyfyrifgiiznjwyw.supabase.co',KEY='sb_publishable_QauZgKz3mSibSVp7h5PWyw_5OMj3YOU',params=new URLSearchParams(location.search),token=params.get('token')||'69a01ca917f7b36722de83a40032605afe5323ae144d452e';const $=id=>document.getElementById(id);let points=[],markers=new Map(),selected=null,filter='all',query='',team=false,map=null;
-function kind(p){let s=((p.category||'')+' '+(p.media_type||'')+' '+(p.media_format||'')+' '+(p.title||'')).toLowerCase();if(s.includes('icônico')||s.includes('iconico'))return'iconic';if(s.includes('top sight'))return'sight';if(s.includes('led'))return'led';if(p.priority==='cliente')return'priority';return'complementary'}function name(k){return({iconic:'Icônico',sight:'Top Sight',led:'LED',priority:'Prioritário',complementary:'Complementar'})[k]||'Ponto'}function ok(p){let k=kind(p),match=filter==='all'||filter==='priority'&&p.priority==='cliente'||filter===k||filter==='complementary'&&p.priority!=='cliente';return match&&[p.title,p.category,p.media_format,p.media_type,p.address,p.stage].join(' ').toLowerCase().includes(query)}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function google(p){return p.latitude!=null?'https://www.google.com/maps/search/?api=1&query='+p.latitude+','+p.longitude:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.address||p.title+', Curitiba')}
-function choose(id,pan=true){let p=points.find(x=>x.id===id);if(!p)return;selected=id;renderList();let m=markers.get(id);if(m&&pan){map.flyTo([p.latitude,p.longitude],16,{duration:.6});m.openTooltip()}$('dTitle').textContent=p.title;$('dMeta').textContent=[name(kind(p)),p.media_type||p.media_format,p.stage].filter(Boolean).join(' · ');$('dAddress').textContent=p.address||'Localização exata ainda não informada.';$('googleLink').href=google(p);$('details').classList.add('show')}
-function renderList(){let arr=points.filter(ok);$('shown').textContent=arr.length+' pontos';$('pointList').innerHTML=arr.map(p=>'<article class="item '+(selected===p.id?'active':'')+'" data-id="'+p.id+'"><div class="itemtop"><strong>'+esc(p.title)+'</strong><span class="pill '+kind(p)+'">'+name(kind(p))+'</span></div><div class="itemmeta">'+esc([p.media_type||p.media_format,p.stage,p.latitude!=null?'No mapa':(p.address||'Localização a definir')].filter(Boolean).join(' · '))+'</div>'+(team?'<div style="margin-top:7px"><select class="status" data-status="'+p.id+'"><option value="pendente" '+(p.status==='pendente'?'selected':'')+'>Pendente</option><option value="em_captacao" '+(p.status==='em_captacao'?'selected':'')+'>Em captação</option><option value="capturado" '+(p.status==='capturado'?'selected':'')+'>Capturado</option><option value="revisado" '+(p.status==='revisado'?'selected':'')+'>Revisado</option></select></div>':'')+'</article>').join('')||'<div class="empty">Nenhum ponto encontrado.</div>';document.querySelectorAll('.item').forEach(el=>el.onclick=e=>{if(e.target.tagName!=='SELECT')choose(el.dataset.id)});document.querySelectorAll('[data-status]').forEach(el=>el.onchange=()=>updatePoint(el.dataset.status,{status:el.value}))}
-function renderMarkers(){if(!map)return;markers.forEach(m=>map.removeLayer(m));markers.clear();points.filter(p=>p.latitude!=null&&p.longitude!=null&&ok(p)).forEach(p=>{let k=kind(p),cl=k==='priority'?'led':k==='complementary'?'digital':k,icon=L.divIcon({className:'',html:'<div class="marker '+cl+'"></div>',iconSize:[26,26],iconAnchor:[13,13]});let m=L.marker([p.latitude,p.longitude],{icon}).addTo(map).bindTooltip(esc(p.title));m.on('click',()=>choose(p.id,false));markers.set(p.id,m)})}function refresh(){renderList();renderMarkers();if(selected&&!points.some(p=>p.id===selected&&ok(p)))selected=null}function fit(){let c=points.filter(p=>p.latitude!=null&&p.longitude!=null&&ok(p)).map(p=>[p.latitude,p.longitude]);if(c.length&&map)map.fitBounds(c,{padding:[35,35],maxZoom:13})}
-async function load(){try{let r=await fetch(URL+'/functions/v1/miller-public-view?token='+encodeURIComponent(token),{cache:'no-store'}),d=await r.json();if(!r.ok)throw Error(d.error||'Falha ao carregar dados ('+r.status+')');points=d.points||[];$('projectName').textContent=d.project.name;$('total').textContent=points.length;$('priority').textContent=points.filter(p=>p.priority==='cliente').length;$('iconics').textContent=points.filter(p=>kind(p)==='iconic').length;$('mapped').textContent=points.filter(p=>p.latitude!=null&&p.longitude!=null).length;refresh();if(map){setTimeout(()=>{map.invalidateSize();fit()},150)}}catch(e){$('pointList').innerHTML='<div class="empty">Falha ao carregar pontos: '+esc(e.message)+'<br><button class="btn" onclick="location.reload()" style="margin-top:10px">Tentar novamente</button></div>'}}
-$('filters').onclick=e=>{let b=e.target.closest('[data-filter]');if(!b)return;filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));refresh()};$('search').oninput=e=>{query=e.target.value.toLowerCase().trim();refresh()};$('fitBtn').onclick=fit;$('closeDetails').onclick=e=>{e.preventDefault();$('details').classList.remove('show')};$('teamBtn').onclick=()=>$('auth').classList.add('show');$('closeAuth').onclick=()=>$('auth').classList.remove('show');
-async function updatePoint(point_id,patch){try{let {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0');let sb=createClient(URL,KEY),{data:{session}}=await sb.auth.getSession();if(!session){$('auth').classList.add('show');return}let r=await fetch(URL+'/functions/v1/miller-team-update',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':KEY},body:JSON.stringify({point_id,...patch})}),d=await r.json();if(!r.ok)throw Error(d.error||'Falha ao salvar');let p=points.find(x=>x.id===point_id);if(p)Object.assign(p,d.point);renderList()}catch(e){alert('Não foi possível atualizar: '+e.message)}}
-$('sendLink').onclick=async()=>{try{let {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0');let sb=createClient(URL,KEY),{error}=await sb.auth.signInWithOtp({email:'mathefs@gmail.com',options:{shouldCreateUser:false,emailRedirectTo:location.origin+'/?token='+encodeURIComponent(token)+'&team=1'}});$('authMsg').textContent=error?error.message:'Link enviado. Abra o e-mail autorizado neste navegador.'}catch(e){$('authMsg').textContent='Falha no serviço de autenticação: '+e.message}};
-function startMap(){if(!window.L){$('map').innerHTML='<div class="empty">O mapa não carregou. A lista e os filtros continuam disponíveis.</div>';return}map=L.map('map',{zoomControl:true}).setView([-25.438,-49.275],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);map.whenReady(()=>{map.invalidateSize();if(points.length)fit()})}
-startMap();load();window.addEventListener('resize',()=>map&&map.invalidateSize());
+const URL='https://mvcigyfyrifgiiznjwyw.supabase.co',KEY='sb_publishable_QauZgKz3mSibSVp7h5PWyw_5OMj3YOU',params=new URLSearchParams(location.search),token=params.get('token')||'69a01ca917f7b36722de83a40032605afe5323ae144d452e';
+const $=id=>document.getElementById(id);
+let points=[],markers=new Map(),selected=null,filter='all',query='',team=false,map=null,supabaseClient=null,teamSession=null,authListener=null;
+const REF_INDEX={
+ '0ec84567-85b4-4012-b605-045b2d484430':0,
+ 'ea84a096-4b64-47aa-b96c-fc1234ed41d5':1,
+ '1c93c917-35ca-4b0a-a56f-63341df24762':2,
+ '02753192-78a8-49cf-9b43-6f694cfc875e':3,
+ '930718ca-f98f-4f54-84ef-57b3b079f137':4,
+ 'caca9218-c227-418b-bea2-45f24efc5d5f':5,
+ '9cc88010-730e-4d40-8d97-fe7ca32894e3':6,
+ 'aef0bada-b0e3-44dd-bfb8-78bd49ba9b14':7,
+ 'c431da2e-6bdb-4e72-9b7e-dba8b8f684b7':8,
+ 'f7b340ff-cc91-4569-9649-4dbcedb0cdb3':9,
+ 'dc797a9c-d93e-4a96-8213-7d536bd7161b':10,
+ '8446521a-af96-43a7-aca8-fa5e6da90134':11,
+ '82d38838-32ea-4c7d-ac7f-7e43c2346388':12,
+ '66ee24fa-b0f9-4105-8d67-4d48b3cb0bfb':13,
+ '8d36a785-332b-477d-86c3-8f5861bfe1fc':14,
+ 'a49cde6c-aa94-49be-b403-090f8a257e6c':15,
+ '607d76e0-93e0-46de-b13b-5e62fbba563b':16,
+ '7ec2ce0e-8c7e-405d-9b3b-f2cd6f1daf97':17,
+ 'eac5ce65-dcca-4e18-8315-6b6df1b5f5e4':18,
+ '4bf133b1-f21d-4675-b04f-fbf4237603ff':19,
+ 'a3a1802f-9215-4a06-b7ad-d7b7c1d28bed':20
+};
+const REF_SHEET='/assets/panel-references.webp';
+function kind(p){let s=((p.category||'')+' '+(p.media_type||'')+' '+(p.media_format||'')+' '+(p.title||'')).toLowerCase();if(s.includes('icônico')||s.includes('iconico'))return'iconic';if(s.includes('top sight'))return'sight';if(s.includes('led'))return'led';if(p.priority==='cliente')return'priority';return'complementary'}
+function name(k){return({iconic:'Icônico',sight:'Top Sight',led:'LED',priority:'Prioritário',complementary:'Complementar'})[k]||'Ponto'}
+function statusName(s){return({pendente:'Pendente',em_captacao:'Em captação',capturado:'Captado',revisado:'Revisado'})[s]||'Pendente'}
+function ok(p){
+ const k=kind(p);
+ let match=filter==='all'||filter==='priority'&&p.priority==='cliente'||filter===k||filter==='complementary'&&p.priority!=='cliente'||filter==='captured'&&(p.status==='capturado'||p.status==='revisado')||filter==='in_progress'&&p.status==='em_captacao';
+ return match&&[p.title,p.category,p.media_format,p.media_type,p.address,p.stage].join(' ').toLowerCase().includes(query);
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function google(p){return p.latitude!=null?'https://www.google.com/maps/search/?api=1&query='+p.latitude+','+p.longitude:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.address||p.title+', Curitiba')}
+function setTeamMode(on,user){
+ team=!!on;
+ $('teamBtn').textContent=team?'Equipe · Ativa':'Equipe';
+ $('teamBtn').classList.toggle('primary',team);
+ $('authMsg').textContent=team?('Sessão ativa: '+(user||'mathefs@gmail.com')):'O acesso de equipe é restrito ao e-mail autorizado.';
+ $('authMsg').classList.toggle('team-state',team);
+ renderList();
+ if(selected)renderModal();
+}
+async function ensureSupabase(){
+ if(!supabaseClient){
+  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0');
+  supabaseClient=createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
+  const {data}=await supabaseClient.auth.getSession();
+  teamSession=data.session||null;
+  setTeamMode(teamSession?.user?.email?.toLowerCase()==='mathefs@gmail.com',teamSession?.user?.email);
+  if(!authListener)authListener=supabaseClient.auth.onAuthStateChange((_event,session)=>{
+   teamSession=session||null;
+   setTeamMode(session?.user?.email?.toLowerCase()==='mathefs@gmail.com',session?.user?.email);
+  });
+ }
+ return supabaseClient;
+}
+function updateStats(){
+ $('total').textContent=points.length;
+ $('priority').textContent=points.filter(p=>p.priority==='cliente').length;
+ $('iconics').textContent=points.filter(p=>kind(p)==='iconic').length;
+ $('mapped').textContent=points.filter(p=>p.latitude!=null&&p.longitude!=null).length;
+ const captured=points.filter(p=>p.status==='capturado'||p.status==='revisado').length;
+ const inProgress=points.filter(p=>p.status==='em_captacao').length;
+ const capBtn=document.querySelector('[data-filter="captured"]');
+ const progBtn=document.querySelector('[data-filter="in_progress"]');
+ if(capBtn)capBtn.textContent='Captados ('+captured+')';
+ if(progBtn)progBtn.textContent='Em captação ('+inProgress+')';
+}
+function renderList(){
+ const arr=points.filter(ok);
+ $('shown').textContent=arr.length+' pontos';
+ $('pointList').innerHTML=arr.map(p=>{
+  const k=kind(p),st=p.status||'pendente';
+  return '<article class="item '+(selected===p.id?'active':'')+'" data-id="'+p.id+'">'+
+   '<div class="itemtop"><strong>'+esc(p.title)+'</strong><span class="pill '+k+'">'+name(k)+'</span></div>'+
+   '<div class="itemmeta">'+esc([p.media_type||p.media_format,p.stage,p.latitude!=null?'No mapa':(p.address||'Localização a definir')].filter(Boolean).join(' · '))+'</div>'+
+   '<div class="item-statusline"><span class="status-pill '+st+'">'+statusName(st)+'</span>'+(p.captured_by?'<span class="itemmeta">por '+esc(p.captured_by)+'</span>':'')+'</div>'+
+  '</article>';
+ }).join('')||'<div class="empty">Nenhum ponto encontrado.</div>';
+ document.querySelectorAll('.item').forEach(el=>el.onclick=()=>choose(el.dataset.id));
+}
+function renderMarkers(){
+ if(!map)return;
+ markers.forEach(m=>map.removeLayer(m));markers.clear();
+ points.filter(p=>p.latitude!=null&&p.longitude!=null&&ok(p)).forEach(p=>{
+  let k=kind(p),cl=k==='priority'?'led':k==='complementary'?'digital':k;
+  if(p.status==='capturado'||p.status==='revisado')cl='captured-marker';
+  let icon=L.divIcon({className:'',html:'<div class="marker '+cl+'"></div>',iconSize:[26,26],iconAnchor:[13,13]});
+  let m=L.marker([p.latitude,p.longitude],{icon}).addTo(map).bindTooltip(esc(p.title)+' · '+statusName(p.status));
+  m.on('click',()=>choose(p.id,false));markers.set(p.id,m);
+ });
+}
+function refresh(){renderList();renderMarkers();updateStats();if(selected&&!points.some(p=>p.id===selected&&ok(p)))selected=null}
+function fit(){let c=points.filter(p=>p.latitude!=null&&p.longitude!=null&&ok(p)).map(p=>[p.latitude,p.longitude]);if(c.length&&map)map.fitBounds(c,{padding:[35,35],maxZoom:13})}
+function closeModal(){
+ $('pointModal').classList.remove('show');$('pointModal').setAttribute('aria-hidden','true');
+}
+function openModal(){ $('pointModal').classList.add('show');$('pointModal').setAttribute('aria-hidden','false'); }
+function setReference(p){
+ const idx=REF_INDEX[p.id];
+ const image=$('referenceImage'),placeholder=$('referencePlaceholder');
+ if(idx===undefined){
+  image.style.backgroundImage='none';placeholder.style.display='flex';$('referenceCaption').textContent='REFERÊNCIA NÃO LOCALIZADA NO PDF DO CLIENTE';return;
+ }
+ const col=idx%3,row=Math.floor(idx/3);
+ image.style.backgroundImage='url("'+REF_SHEET+'")';
+ image.style.backgroundSize='300% 700%';
+ image.style.backgroundPosition=(col*50)+'% '+(row*100/6)+'%';
+ placeholder.style.display='none';
+ $('referenceCaption').textContent='REFERÊNCIA VISUAL · PDF FAVRETTO · PÁGINA '+(p.source_page||'—');
+}
+function renderModal(){
+ const p=points.find(x=>x.id===selected);if(!p)return;
+ const st=p.status||'pendente';
+ $('modalTitle').textContent=p.title;
+ $('modalSubtitle').textContent=[name(kind(p)),p.media_type||p.media_format].filter(Boolean).join(' · ');
+ $('modalStatus').textContent=statusName(st);
+ $('modalStatus').className='status-badge '+st;
+ $('modalAddress').textContent=p.address||'Endereço não detalhado no cadastro.';
+ $('modalFormat').textContent=p.media_format||p.media_type||'Não informado';
+ $('modalStage').textContent=({novembro:'Novembro/2026',dezembro:'Dezembro/2026',ambos:'Novembro e dezembro/2026'})[p.stage]||p.stage||'Não informado';
+ $('modalPriority').textContent=p.priority==='cliente'?'Prioritário / cliente':'Complementar';
+ $('modalCoords').textContent=p.latitude!=null&&p.longitude!=null?p.latitude.toFixed(5)+', '+p.longitude.toFixed(5):'Sem coordenadas cadastradas';
+ $('captureMeta').textContent=p.captured_at?'Check-in em '+new Date(p.captured_at).toLocaleString('pt-BR')+' · por '+(p.captured_by||'equipe'):'Ainda sem check-in de captação.';
+ $('modalNotes').value=p.notes||'';
+ $('modalNotes').readOnly=!team;
+ $('modalNotes').placeholder=team?'Condições de acesso, melhor ângulo, obstáculos, orientação de captação...':'Entre como equipe para registrar observações de campo.';
+ $('notesActions').style.display=team?'flex':'none';
+ $('captureActions').style.display=team?'flex':'none';
+ $('startCapture').style.display=st==='em_captacao'?'none':'inline-flex';
+ $('checkinCapture').textContent=(st==='capturado'||st==='revisado')?'✓ Captura registrada':'✓ Confirmar painel captado';
+ $('checkinCapture').disabled=st==='capturado'||st==='revisado';
+ $('modalFootnote').textContent=team?'A alteração é salva na base e registrada no histórico da equipe.':'Visualização do cliente. A equipe pode registrar check-in e observações após entrar.';
+ setReference(p);
+ $('modalGoogleLink').href=google(p);
+ $('modalGoogleLink').style.display=(p.address||p.latitude!=null)?'inline-block':'none';
+}
+function choose(id,pan=true){
+ const p=points.find(x=>x.id===id);if(!p)return;
+ selected=id;renderList();
+ const m=markers.get(id);
+ if(m&&pan&&p.latitude!=null&&p.longitude!=null){map.flyTo([p.latitude,p.longitude],16,{duration:.6});m.openTooltip()}
+ renderModal();openModal();
+}
+async function updatePoint(point_id,patch,{jumpToCaptured=false}={}){
+ try{
+  const sb=await ensureSupabase();
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){$('auth').classList.add('show');return false}
+  if(session.user?.email?.toLowerCase()!=='mathefs@gmail.com'){setTeamMode(false);throw Error('Acesso não autorizado.')}
+  const r=await fetch(URL+'/functions/v1/miller-team-update',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':KEY},
+   body:JSON.stringify({point_id,...patch})
+  });
+  const d=await r.json();if(!r.ok)throw Error(d.error||'Falha ao salvar');
+  const p=points.find(x=>x.id===point_id);if(p)Object.assign(p,d.point);
+  if(jumpToCaptured&&patch.status==='capturado'){
+   filter='captured';
+   document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.filter==='captured'));
+  }
+  refresh();if(selected)renderModal();return true;
+ }catch(e){alert('Não foi possível atualizar: '+e.message);return false}
+}
+$('filters').onclick=e=>{
+ const b=e.target.closest('[data-filter]');if(!b)return;
+ filter=b.dataset.filter;
+ document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));
+ refresh();
+};
+$('search').oninput=e=>{query=e.target.value.toLowerCase().trim();refresh()};
+$('fitBtn').onclick=fit;
+$('closeDetails').onclick=e=>{e.preventDefault();$('details').classList.remove('show')};
+$('closePointModal').onclick=closeModal;
+$('pointModal').addEventListener('click',e=>{if(e.target.hasAttribute('data-close-modal'))closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();$('auth').classList.remove('show')}});
+$('teamBtn').onclick=async()=>{await ensureSupabase();$('auth').classList.add('show')};
+$('closeAuth').onclick=()=>$('auth').classList.remove('show');
+$('startCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'em_captacao'});if(ok)renderModal()};
+$('checkinCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'capturado'},{jumpToCaptured:true});if(ok)renderModal()};
+$('saveNotes').onclick=async()=>{const ok=await updatePoint(selected,{notes:$('modalNotes').value});if(ok){$('modalFootnote').textContent='Observação salva e registrada no histórico.';renderModal()}};
+async function load(){
+ try{
+  let r=await fetch(URL+'/functions/v1/miller-public-view?token='+encodeURIComponent(token),{cache:'no-store'}),d=await r.json();
+  if(!r.ok)throw Error(d.error||'Falha ao carregar dados ('+r.status+')');
+  points=d.points||[];$('projectName').textContent=d.project.name;refresh();
+  if(map){setTimeout(()=>{map.invalidateSize();fit()},150)}
+ }catch(e){
+  $('pointList').innerHTML='<div class="empty">Falha ao carregar pontos: '+esc(e.message)+'<br><button class="btn" onclick="location.reload()" style="margin-top:10px">Tentar novamente</button></div>';
+ }
+}
+$('sendLink').onclick=async()=>{
+ try{
+  const sb=await ensureSupabase();
+  const {error}=await sb.auth.signInWithOtp({email:'mathefs@gmail.com',options:{shouldCreateUser:false,emailRedirectTo:location.origin+'/?token='+encodeURIComponent(token)+'&team=1'}});
+  $('authMsg').textContent=error?error.message:'Link enviado. Abra o e-mail autorizado neste navegador.';
+ }catch(e){$('authMsg').textContent='Falha no serviço de autenticação: '+e.message}
+};
+function startMap(){
+ if(!window.L){$('map').innerHTML='<div class="empty">O mapa não carregou. A lista e os filtros continuam disponíveis.</div>';return}
+ map=L.map('map',{zoomControl:true}).setView([-25.438,-49.275],12);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);
+ map.whenReady(()=>{map.invalidateSize();if(points.length)fit()});
+}
+startMap();load();ensureSupabase().catch(()=>{});
+window.addEventListener('resize',()=>map&&map.invalidateSize());
+
 </script></body></html>
