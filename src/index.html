@@ -38,6 +38,28 @@
 .capture-actions .btn{padding:10px 12px;font-size:11px}
 .modal-footnote{font-size:10px;color:#777;margin-top:10px}
 .authcard .team-state{color:#c7f3d8}
+.status-pill.concluido,.status-badge.concluido{background:#163e2e;border-color:#32845f;color:#b4f3d1}
+.filter[data-filter="completed"].active{background:#176343;border-color:#176343}
+.media-panel{margin-top:14px;padding:12px;background:#101012;border:1px solid #343438;border-radius:10px}
+.media-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
+.media-panel-head label{display:block;font-size:9px;letter-spacing:.13em;color:#ddd;font-weight:800}
+.media-panel-head small{display:block;font-size:10px;line-height:1.4;color:#85858b;margin-top:4px}
+.media-count{font-size:9px;color:#aaa;border:1px solid #39393d;border-radius:20px;padding:4px 7px;white-space:nowrap}
+.media-upload{margin-bottom:10px}
+.upload-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:8px 11px;border:1px dashed #68686e;border-radius:7px;color:#eee;background:#202023;font-size:10px;font-weight:700;cursor:pointer}
+.upload-trigger:hover{background:#29292d;border-color:#aaa}
+.media-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:7px}
+.media-thumb{display:block;position:relative;min-width:0;text-decoration:none;color:#ddd}
+.media-thumb img{display:block;width:100%;height:74px;object-fit:cover;border-radius:6px;border:1px solid #3d3d42;background:#242427}
+.media-thumb span{display:block;margin-top:4px;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#aaa}
+.media-empty{color:#737379;font-size:10px;padding:8px 0}
+.media-upload-status{font-size:10px;color:#a7d8b9;margin-top:7px;min-height:12px}
+.final-frame-gallery img{display:block;width:100%;max-height:210px;object-fit:contain;object-position:left center;background:#080809;border-radius:7px;border:1px solid #444}
+.final-frame-gallery .media-thumb span{font-size:10px}
+.complete-btn{border-color:#327a59!important;color:#c5f3d8!important}
+.complete-btn:disabled{opacity:.38;cursor:not-allowed}
+@media(max-width:850px){.media-gallery{grid-template-columns:repeat(auto-fill,minmax(75px,1fr))}.media-thumb img{height:68px}.final-frame-gallery img{max-height:190px}}
+
 @media(max-width:850px){.point-modal{padding:10px;align-items:flex-end}.point-modal-card{width:100%;max-height:94vh;border-radius:14px 14px 0 0}.modal-content{grid-template-columns:1fr;gap:14px;padding:14px}.reference-image{aspect-ratio:16/9}.modal-title-row h2{font-size:19px}.capture-actions{display:grid;grid-template-columns:1fr}.capture-actions .btn{width:100%}}
 @media(min-width:851px){.point-modal-card{overflow:hidden}.modal-content{max-height:calc(min(90vh,900px) - 70px);overflow:auto}}
 
@@ -45,7 +67,7 @@
 <header class="top"><img class="miller" src="/assets/header-miller.png" alt="Miller"><img class="faw" src="/assets/header-faw.png" alt="FAW.digital"><button class="btn team" id="teamBtn">Equipe</button></header>
 <div class="title-band"><img class="project-title" src="/assets/header-title.png" alt="Sistema de captação campanha Miller OOH"></div><h1 id="projectName" class="sr-only">Miller OOH — Curitiba</h1><p class="muted" style="margin:5px 0 0">Mapa de pontos, prioridades e acompanhamento de produção.</p>
 <section class="stats"><div class="stat"><label>Pontos no plano</label><strong id="total">—</strong></div><div class="stat"><label>Prioritários</label><strong id="priority">—</strong></div><div class="stat"><label>Icônicos</label><strong id="iconics">—</strong></div><div class="stat"><label>Com localização</label><strong id="mapped">—</strong></div></section>
-<section class="workspace"><aside class="panel side"><div class="panelhead"><h2>Pontos de captação</h2><span id="shown" class="muted"></span></div><div class="tools"><input id="search" placeholder="Buscar ponto, bairro ou formato..."><div class="filters" id="filters"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="priority">Prioritários</button><button class="filter" data-filter="iconic">Icônicos</button><button class="filter" data-filter="led">LED</button><button class="filter" data-filter="sight">Top Sight</button><button class="filter" data-filter="complementary">Complementares</button><button class="filter" data-filter="in_progress">Em captação (0)</button><button class="filter" data-filter="captured">Captados (0)</button></div></div><div class="list" id="pointList"><div class="empty">Carregando pontos...</div></div></aside>
+<section class="workspace"><aside class="panel side"><div class="panelhead"><h2>Pontos de captação</h2><span id="shown" class="muted"></span></div><div class="tools"><input id="search" placeholder="Buscar ponto, bairro ou formato..."><div class="filters" id="filters"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="priority">Prioritários</button><button class="filter" data-filter="iconic">Icônicos</button><button class="filter" data-filter="led">LED</button><button class="filter" data-filter="sight">Top Sight</button><button class="filter" data-filter="complementary">Complementares</button><button class="filter" data-filter="in_progress">Em captação (0)</button><button class="filter" data-filter="captured">Captados (0)</button><button class="filter" data-filter="completed">Concluídos (0)</button></div></div><div class="list" id="pointList"><div class="empty">Carregando pontos...</div></div></aside>
 <section class="panel mapbox"><div class="maphead"><div class="maptitle">Mapa de mídia · Curitiba</div><button class="btn" id="fitBtn">Ver todos</button></div><div id="map"></div><div class="legend"><span class="leg"><i class="dot" style="background:#ff343b"></i>Icônico</span><span class="leg"><i class="dot" style="background:#e3262e"></i>LED / prioritário</span><span class="leg"><i class="dot" style="background:#f0a33c"></i>Top Sight</span><span class="leg"><i class="dot" style="background:#c8c8cc"></i>Complementar</span></div><div class="details" id="details"><h3 id="dTitle"></h3><p id="dMeta"></p><p id="dAddress"></p><a id="googleLink" target="_blank" rel="noopener">Abrir no Google Maps ↗</a><a href="#" id="closeDetails">Fechar</a></div></section></section><div style="text-align:right;color:#777;font-size:9px;margin-top:8px;letter-spacing:.08em">FAW.DIGITAL · MILLER OOH CURITIBA</div></main>
 <div class="point-modal" id="pointModal" aria-hidden="true">
   <div class="point-modal-backdrop" data-close-modal></div>
@@ -59,6 +81,12 @@
         <div class="reference-image" id="referenceImage"><div class="reference-placeholder" id="referencePlaceholder">REFERÊNCIA VISUAL<br><small>Imagem não disponível no PDF</small></div></div>
         <div class="reference-caption" id="referenceCaption">IMAGEM DE REFERÊNCIA DO CLIENTE</div>
         <a id="modalGoogleLink" class="map-link" target="_blank" rel="noopener">Abrir rota / localização no Google Maps ↗</a>
+        <section class="media-panel" id="referenceMediaPanel">
+          <div class="media-panel-head"><div><label>FOTOS DE REFERÊNCIA</label><small>Imagens do local, fachada e enquadramentos desejados</small></div><span class="media-count" id="referenceCount">0 imagens</span></div>
+          <div class="media-upload" id="referenceUploadControl"><label class="upload-trigger" for="referenceMediaInput">＋ Adicionar fotos de referência</label><input type="file" id="referenceMediaInput" accept="image/jpeg,image/png,image/webp" multiple hidden></div>
+          <div class="media-gallery" id="referenceMediaGallery"><div class="media-empty">Nenhuma foto de referência anexada.</div></div>
+          <div class="media-upload-status" id="referenceUploadStatus" aria-live="polite"></div>
+        </section>
       </div>
       <div class="modal-info">
         <div class="modal-title-row"><div><h2 id="modalTitle"></h2><p id="modalSubtitle" class="muted"></p></div><span class="status-badge" id="modalStatus"></span></div>
@@ -68,10 +96,17 @@
           <div class="field-pair"><div><label>PRIORIDADE</label><p id="modalPriority"></p></div><div><label>LOCALIZAÇÃO</label><p id="modalCoords"></p></div></div>
           <div class="capture-meta" id="captureMeta"></div>
         </div>
+        <section class="media-panel final-frame-panel" id="finalFramePanel">
+          <div class="media-panel-head"><div><label>FRAME FINAL DO TAKE</label><small>Imagem obrigatória para marcar este ponto como concluído</small></div><span class="media-count" id="finalFrameCount">Não anexado</span></div>
+          <div class="media-upload" id="finalFrameUploadControl"><label class="upload-trigger" for="finalFrameInput">＋ Enviar frame captado</label><input type="file" id="finalFrameInput" accept="image/jpeg,image/png,image/webp" hidden></div>
+          <div class="final-frame-gallery" id="finalFrameGallery"><div class="media-empty">O frame final ainda não foi enviado.</div></div>
+          <div class="media-upload-status" id="finalFrameUploadStatus" aria-live="polite"></div>
+        </section>
         <div class="modal-notes"><label for="modalNotes">OBSERVAÇÕES DE CAMPO</label><textarea id="modalNotes" rows="3" placeholder="Condições de acesso, melhor ângulo, obstáculos, orientação de captação..."></textarea><div class="notes-actions" id="notesActions"><button class="btn" id="saveNotes">Salvar observação</button></div></div>
         <div class="capture-actions" id="captureActions">
           <button class="btn" id="startCapture">Iniciar captação</button>
           <button class="btn primary" id="checkinCapture">✓ Confirmar painel captado</button>
+          <button class="btn complete-btn" id="completePoint" disabled>Concluir painel · envie o frame final</button>
         </div>
         <div class="modal-footnote" id="modalFootnote">A atualização fica registrada no histórico da equipe.</div>
       </div>
@@ -109,10 +144,10 @@ const REF_INDEX={
 const REF_SHEET='/assets/panel-references.webp';
 function kind(p){let s=((p.category||'')+' '+(p.media_type||'')+' '+(p.media_format||'')+' '+(p.title||'')).toLowerCase();if(s.includes('icônico')||s.includes('iconico'))return'iconic';if(s.includes('top sight'))return'sight';if(s.includes('led'))return'led';if(p.priority==='cliente')return'priority';return'complementary'}
 function name(k){return({iconic:'Icônico',sight:'Top Sight',led:'LED',priority:'Prioritário',complementary:'Complementar'})[k]||'Ponto'}
-function statusName(s){return({pendente:'Pendente',em_captacao:'Em captação',capturado:'Captado',revisado:'Revisado'})[s]||'Pendente'}
+function statusName(s){return({pendente:'Pendente',em_captacao:'Em captação',capturado:'Captado',revisado:'Revisado',concluido:'Concluído'})[s]||'Pendente'}
 function ok(p){
  const k=kind(p);
- let match=filter==='all'||filter==='priority'&&p.priority==='cliente'||filter===k||filter==='complementary'&&p.priority!=='cliente'||filter==='captured'&&(p.status==='capturado'||p.status==='revisado')||filter==='in_progress'&&p.status==='em_captacao';
+ let match=filter==='all'||filter==='priority'&&p.priority==='cliente'||filter===k||filter==='complementary'&&p.priority!=='cliente'||filter==='captured'&&(p.status==='capturado'||p.status==='revisado')||filter==='completed'&&p.status==='concluido'||filter==='in_progress'&&p.status==='em_captacao';
  return match&&[p.title,p.category,p.media_format,p.media_type,p.address,p.stage].join(' ').toLowerCase().includes(query);
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -147,10 +182,13 @@ function updateStats(){
  $('mapped').textContent=points.filter(p=>p.latitude!=null&&p.longitude!=null).length;
  const captured=points.filter(p=>p.status==='capturado'||p.status==='revisado').length;
  const inProgress=points.filter(p=>p.status==='em_captacao').length;
+ const completed=points.filter(p=>p.status==='concluido').length;
  const capBtn=document.querySelector('[data-filter="captured"]');
  const progBtn=document.querySelector('[data-filter="in_progress"]');
+ const doneBtn=document.querySelector('[data-filter="completed"]');
  if(capBtn)capBtn.textContent='Captados ('+captured+')';
  if(progBtn)progBtn.textContent='Em captação ('+inProgress+')';
+ if(doneBtn)doneBtn.textContent='Concluídos ('+completed+')';
 }
 function renderList(){
  const arr=points.filter(ok);
@@ -170,7 +208,7 @@ function renderMarkers(){
  markers.forEach(m=>map.removeLayer(m));markers.clear();
  points.filter(p=>p.latitude!=null&&p.longitude!=null&&ok(p)).forEach(p=>{
   let k=kind(p),cl=k==='priority'?'led':k==='complementary'?'digital':k;
-  if(p.status==='capturado'||p.status==='revisado')cl='captured-marker';
+  if(p.status==='capturado'||p.status==='revisado'||p.status==='concluido')cl='captured-marker';
   let icon=L.divIcon({className:'',html:'<div class="marker '+cl+'"></div>',iconSize:[26,26],iconAnchor:[13,13]});
   let m=L.marker([p.latitude,p.longitude],{icon}).addTo(map).bindTooltip(esc(p.title)+' · '+statusName(p.status));
   m.on('click',()=>choose(p.id,false));markers.set(p.id,m);
@@ -227,12 +265,67 @@ function renderModal(){
  $('notesActions').style.display=team?'flex':'none';
  $('captureActions').style.display=team?'flex':'none';
  $('startCapture').style.display=st==='em_captacao'?'none':'inline-flex';
- $('checkinCapture').textContent=(st==='capturado'||st==='revisado')?'✓ Captura registrada':'✓ Confirmar painel captado';
- $('checkinCapture').disabled=st==='capturado'||st==='revisado';
+ $('checkinCapture').textContent=(st==='capturado'||st==='revisado'||st==='concluido')?'✓ Captação registrada':'✓ Confirmar painel captado';
+ $('checkinCapture').disabled=st==='capturado'||st==='revisado'||st==='concluido';
+ $('completePoint').textContent=st==='concluido'?'✓ Ponto concluído':'Concluir painel · envie o frame final';
+ $('completePoint').disabled=st==='concluido'||!(p.media||[]).some(m=>m.kind==='final_frame');
  $('modalFootnote').textContent=team?'A alteração é salva na base e registrada no histórico da equipe.':'Visualização do cliente. A equipe pode registrar check-in e observações após entrar.';
  setReference(p);
+ renderMedia(p);
  $('modalGoogleLink').href=google(p);
  $('modalGoogleLink').style.display=(p.address||p.latitude!=null)?'inline-block':'none';
+}
+function renderMedia(p){
+ const media=p.media||[];
+ const refs=media.filter(m=>m.kind==='reference');
+ const finals=media.filter(m=>m.kind==='final_frame').sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ $('referenceCount').textContent=refs.length+' '+(refs.length===1?'imagem':'imagens');
+ $('referenceMediaGallery').innerHTML=refs.length?refs.map(m=>'<a class="media-thumb" href="'+esc(m.url)+'" target="_blank" rel="noopener"><img src="'+esc(m.url)+'" alt="Foto de referência" loading="lazy"><span>'+esc(m.filename||'Referência')+'</span></a>').join(''):'<div class="media-empty">Nenhuma foto de referência anexada.</div>';
+ $('finalFrameCount').textContent=finals.length?'Anexado':'Não anexado';
+ $('finalFrameGallery').innerHTML=finals.length?'<a class="media-thumb" href="'+esc(finals[0].url)+'" target="_blank" rel="noopener"><img src="'+esc(finals[0].url)+'" alt="Frame final do take"><span>'+esc(finals[0].filename||'Frame final')+'</span></a>':'<div class="media-empty">O frame final ainda não foi enviado.</div>';
+ $('referenceUploadControl').style.display=team?'block':'none';
+ $('finalFrameUploadControl').style.display=team?'block':'none';
+ $('completePoint').disabled=!team||p.status==='concluido'||finals.length===0;
+}
+async function uploadPointMedia(pointId,file,kind){
+ const statusId=kind==='reference'?'referenceUploadStatus':'finalFrameUploadStatus';
+ try{
+  const sb=await ensureSupabase();
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){$('auth').classList.add('show');return false}
+  if(!file||!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Use JPG, PNG ou WebP.');
+  if(file.size>12*1024*1024)throw Error('A imagem deve ter até 12 MB.');
+  $(statusId).textContent='Enviando '+file.name+'...';
+  const form=new FormData();
+  form.set('point_id',pointId);
+  form.set('media_kind',kind);
+  form.set('file',file);
+  const response=await fetch(URL+'/functions/v1/miller-media',{
+   method:'POST',
+   headers:{'Authorization':'Bearer '+session.access_token,'apikey':KEY},
+   body:form
+  });
+  const data=await response.json();
+  if(!response.ok)throw Error(data.error||'Falha ao enviar a imagem.');
+  const point=points.find(p=>p.id===pointId);
+  if(point){point.media=point.media||[];point.media.push(data.media);renderMedia(point)}
+  $(statusId).textContent='Imagem enviada e vinculada ao ponto.';
+  return true;
+ }catch(error){
+  $(statusId).textContent='Não foi possível enviar: '+error.message;
+  return false;
+ }
+}
+async function uploadMany(pointId,files,kind){
+ const input=kind==='reference'?'referenceMediaInput':'finalFrameInput';
+ const status=kind==='reference'?'referenceUploadStatus':'finalFrameUploadStatus';
+ const list=[...files];
+ $(input).value='';
+ for(let i=0;i<list.length;i++){
+  $(status).textContent='Enviando '+(i+1)+' de '+list.length+'...';
+  const ok=await uploadPointMedia(pointId,list[i],kind);
+  if(!ok)break;
+ }
 }
 function choose(id,pan=true){
  const p=points.find(x=>x.id===id);if(!p)return;
@@ -254,9 +347,9 @@ async function updatePoint(point_id,patch,{jumpToCaptured=false}={}){
   });
   const d=await r.json();if(!r.ok)throw Error(d.error||'Falha ao salvar');
   const p=points.find(x=>x.id===point_id);if(p)Object.assign(p,d.point);
-  if(jumpToCaptured&&patch.status==='capturado'){
-   filter='captured';
-   document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.filter==='captured'));
+  if(jumpToCaptured&&(patch.status==='capturado'||patch.status==='concluido')){
+   filter=patch.status==='concluido'?'completed':'captured';
+   document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.filter===filter));
   }
   refresh();if(selected)renderModal();return true;
  }catch(e){alert('Não foi possível atualizar: '+e.message);return false}
@@ -277,6 +370,14 @@ $('teamBtn').onclick=async()=>{await ensureSupabase();$('auth').classList.add('s
 $('closeAuth').onclick=()=>$('auth').classList.remove('show');
 $('startCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'em_captacao'});if(ok)renderModal()};
 $('checkinCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'capturado'},{jumpToCaptured:true});if(ok)renderModal()};
+$('completePoint').onclick=async()=>{
+ const p=points.find(x=>x.id===selected);
+ if(!(p?.media||[]).some(m=>m.kind==='final_frame')){alert('Envie o frame final do take antes de concluir este ponto.');return}
+ const ok=await updatePoint(selected,{status:'concluido'},{jumpToCaptured:true});
+ if(ok)renderModal();
+};
+$('referenceMediaInput').onchange=e=>selected&&uploadMany(selected,e.target.files,'reference');
+$('finalFrameInput').onchange=e=>selected&&e.target.files?.[0]&&uploadMany(selected,[e.target.files[0]],'final_frame');
 $('saveNotes').onclick=async()=>{const ok=await updatePoint(selected,{notes:$('modalNotes').value});if(ok){$('modalFootnote').textContent='Observação salva e registrada no histórico.';renderModal()}};
 async function load(){
  try{
