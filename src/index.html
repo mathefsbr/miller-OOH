@@ -163,17 +163,48 @@ function setTeamMode(on,user){
 }
 async function ensureSupabase(){
  if(!supabaseClient){
-  const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0');
-  supabaseClient=createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
-  const {data}=await supabaseClient.auth.getSession();
+  let createClient;
+  try{
+   ({createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0'));
+  }catch(primaryError){
+   try{
+    ({createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/+esm'));
+   }catch(fallbackError){
+    throw new Error('Não foi possível carregar o serviço de login. Verifique sua conexão e tente novamente.');
+   }
+  }
+  supabaseClient=createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true,flowType:'pkce'}});
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error)throw error;
   teamSession=data.session||null;
   setTeamMode(teamSession?.user?.email?.toLowerCase()==='mathefs@gmail.com',teamSession?.user?.email);
   if(!authListener)authListener=supabaseClient.auth.onAuthStateChange((_event,session)=>{
    teamSession=session||null;
    setTeamMode(session?.user?.email?.toLowerCase()==='mathefs@gmail.com',session?.user?.email);
+   if(session?.user?.email?.toLowerCase()==='mathefs@gmail.com'){
+    $('authMsg').textContent='Acesso liberado para '+session.user.email+'.';
+    $('sendLink').textContent='Acesso confirmado';
+    $('sendLink').disabled=true;
+    setTimeout(()=>$('auth').classList.remove('show'),900);
+   }
   });
  }
  return supabaseClient;
+}
+function openTeamLogin(message){
+ $('auth').classList.add('show');
+ $('sendLink').disabled=true;
+ $('sendLink').textContent='Conectando ao login...';
+ $('authMsg').textContent=message||'Preparando o acesso seguro da equipe...';
+ ensureSupabase().then(()=>{
+  $('sendLink').disabled=!!team;
+  $('sendLink').textContent=team?'Acesso confirmado':'Enviar link de acesso';
+  if(!team)$('authMsg').textContent=message||'Envie um link de acesso para o e-mail autorizado.';
+ }).catch(error=>{
+  $('sendLink').disabled=false;
+  $('sendLink').textContent='Tentar novamente';
+  $('authMsg').textContent='Falha ao iniciar o login: '+(error?.message||'erro desconhecido');
+ });
 }
 function updateStats(){
  $('total').textContent=points.length;
@@ -373,7 +404,7 @@ $('closeDetails').onclick=e=>{e.preventDefault();$('details').classList.remove('
 $('closePointModal').onclick=closeModal;
 $('pointModal').addEventListener('click',e=>{if(e.target.hasAttribute('data-close-modal'))closeModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();$('auth').classList.remove('show')}});
-$('teamBtn').onclick=async()=>{await ensureSupabase();$('auth').classList.add('show')};
+$('teamBtn').onclick=()=>openTeamLogin();
 $('closeAuth').onclick=()=>$('auth').classList.remove('show');
 $('startCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'em_captacao'});if(ok)renderModal()};
 $('checkinCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'capturado'},{jumpToCaptured:true});if(ok)renderModal()};
@@ -383,12 +414,12 @@ $('completePoint').onclick=async()=>{
  const ok=await updatePoint(selected,{status:'concluido'},{jumpToCaptured:true});
  if(ok)renderModal();
 };
-$('referenceUploadButton').onclick=async()=>{
- if(!team){await ensureSupabase();$('auth').classList.add('show');$('authMsg').textContent='Acesse com o e-mail autorizado para liberar o envio de fotos.';return}
+$('referenceUploadButton').onclick=()=>{
+ if(!team){openTeamLogin('Entre com o e-mail autorizado para liberar o envio de fotos.');return}
  $('referenceMediaInput').click();
 };
-$('finalFrameUploadButton').onclick=async()=>{
- if(!team){await ensureSupabase();$('auth').classList.add('show');$('authMsg').textContent='Acesse com o e-mail autorizado para enviar o frame final.';return}
+$('finalFrameUploadButton').onclick=()=>{
+ if(!team){openTeamLogin('Entre com o e-mail autorizado para enviar o frame final.');return}
  $('finalFrameInput').click();
 };
 $('referenceMediaInput').onchange=e=>selected&&uploadMany(selected,e.target.files,'reference');
@@ -405,11 +436,27 @@ async function load(){
  }
 }
 $('sendLink').onclick=async()=>{
+ const button=$('sendLink');
+ button.disabled=true;button.textContent='Enviando...';
+ $('authMsg').textContent='Solicitando link de acesso...';
  try{
   const sb=await ensureSupabase();
-  const {error}=await sb.auth.signInWithOtp({email:'mathefs@gmail.com',options:{shouldCreateUser:false,emailRedirectTo:location.origin+'/?token='+encodeURIComponent(token)+'&team=1'}});
-  $('authMsg').textContent=error?error.message:'Link enviado. Abra o e-mail autorizado neste navegador.';
- }catch(e){$('authMsg').textContent='Falha no serviço de autenticação: '+e.message}
+  const callback=new URL('https://miller-ooh-curitiba-faw-digital.vercel.app/');
+  callback.searchParams.set('token',token);
+  callback.searchParams.set('team','1');
+  const {error}=await sb.auth.signInWithOtp({
+   email:'mathefs@gmail.com',
+   options:{shouldCreateUser:false,emailRedirectTo:callback.toString()}
+  });
+  if(error)throw error;
+  $('authMsg').textContent='Link enviado para mathefs@gmail.com. Abra a mensagem no mesmo navegador em que a plataforma está aberta. Confira também Spam e Promoções.';
+  button.textContent='Enviar novamente';
+ }catch(e){
+  $('authMsg').textContent='Não foi possível enviar o link: '+(e?.message||'erro desconhecido');
+  button.textContent='Tentar novamente';
+ }finally{
+  button.disabled=false;
+ }
 };
 function startMap(){
  if(!window.L){$('map').innerHTML='<div class="empty">O mapa não carregou. A lista e os filtros continuam disponíveis.</div>';return}
