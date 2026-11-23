@@ -64,7 +64,7 @@
 @media(min-width:851px){.point-modal-card{overflow:hidden}.modal-content{max-height:calc(min(90vh,900px) - 70px);overflow:auto}}
 
 </style></head><body><main class="wrap">
-<header class="top"><img class="miller" src="/assets/header-miller.png" alt="Miller"><img class="faw" src="/assets/header-faw.png" alt="FAW.digital"><button class="btn team" id="teamBtn">Equipe</button></header>
+<header class="top"><img class="miller" src="/assets/header-miller.png" alt="Miller"><img class="faw" src="/assets/header-faw.png" alt="FAW.digital"><span class="btn team team-access" aria-label="Edição liberada para todos">Edição liberada</span></header>
 <div class="title-band"><img class="project-title" src="/assets/header-title.png" alt="Sistema de captação campanha Miller OOH"></div><h1 id="projectName" class="sr-only">Miller OOH — Curitiba</h1><p class="muted" style="margin:5px 0 0">Mapa de pontos, prioridades e acompanhamento de produção.</p>
 <section class="stats"><div class="stat"><label>Pontos no plano</label><strong id="total">—</strong></div><div class="stat"><label>Prioritários</label><strong id="priority">—</strong></div><div class="stat"><label>Icônicos</label><strong id="iconics">—</strong></div><div class="stat"><label>Com localização</label><strong id="mapped">—</strong></div></section>
 <section class="workspace"><aside class="panel side"><div class="panelhead"><h2>Pontos de captação</h2><span id="shown" class="muted"></span></div><div class="tools"><input id="search" placeholder="Buscar ponto, bairro ou formato..."><div class="filters" id="filters"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="priority">Prioritários</button><button class="filter" data-filter="iconic">Icônicos</button><button class="filter" data-filter="led">LED</button><button class="filter" data-filter="sight">Top Sight</button><button class="filter" data-filter="complementary">Complementares</button><button class="filter" data-filter="in_progress">Em captação (0)</button><button class="filter" data-filter="captured">Captados (0)</button><button class="filter" data-filter="completed">Concluídos (0)</button></div></div><div class="list" id="pointList"><div class="empty">Carregando pontos...</div></div></aside>
@@ -113,11 +113,10 @@
     </div>
   </section>
 </div>
-<div class="auth" id="auth"><div class="authcard"><h2>Acesso da equipe</h2><p>Entre com o e-mail autorizado para atualizar o status dos pontos.</p><input type="email" id="email" value="mathefs@gmail.com" readonly><button class="btn primary" id="sendLink">Enviar link de acesso</button><p id="authMsg">O acesso de cliente permanece somente para visualização.</p><button class="btn" id="closeAuth">Fechar</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const URL='https://mvcigyfyrifgiiznjwyw.supabase.co',KEY='sb_publishable_QauZgKz3mSibSVp7h5PWyw_5OMj3YOU',params=new URLSearchParams(location.search),token=params.get('token')||'69a01ca917f7b36722de83a40032605afe5323ae144d452e';
 const $=id=>document.getElementById(id);
-let points=[],markers=new Map(),selected=null,filter='all',query='',team=false,map=null,supabaseClient=null,teamSession=null,authListener=null;
+let points=[],markers=new Map(),selected=null,filter='all',query='',team=true,map=null;
 const REF_INDEX={
  '0ec84567-85b4-4012-b605-045b2d484430':0,
  'ea84a096-4b64-47aa-b96c-fc1234ed41d5':1,
@@ -152,60 +151,6 @@ function ok(p){
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function google(p){return p.latitude!=null?'https://www.google.com/maps/search/?api=1&query='+p.latitude+','+p.longitude:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.address||p.title+', Curitiba')}
-function setTeamMode(on,user){
- team=!!on;
- $('teamBtn').textContent=team?'Equipe · Ativa':'Equipe';
- $('teamBtn').classList.toggle('primary',team);
- $('authMsg').textContent=team?('Sessão ativa: '+(user||'mathefs@gmail.com')):'O acesso de equipe é restrito ao e-mail autorizado.';
- $('authMsg').classList.toggle('team-state',team);
- renderList();
- if(selected)renderModal();
-}
-async function ensureSupabase(){
- if(!supabaseClient){
-  let createClient;
-  try{
-   ({createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.0'));
-  }catch(primaryError){
-   try{
-    ({createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/+esm'));
-   }catch(fallbackError){
-    throw new Error('Não foi possível carregar o serviço de login. Verifique sua conexão e tente novamente.');
-   }
-  }
-  supabaseClient=createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true,flowType:'pkce'}});
-  const {data,error}=await supabaseClient.auth.getSession();
-  if(error)throw error;
-  teamSession=data.session||null;
-  setTeamMode(teamSession?.user?.email?.toLowerCase()==='mathefs@gmail.com',teamSession?.user?.email);
-  if(!authListener)authListener=supabaseClient.auth.onAuthStateChange((_event,session)=>{
-   teamSession=session||null;
-   setTeamMode(session?.user?.email?.toLowerCase()==='mathefs@gmail.com',session?.user?.email);
-   if(session?.user?.email?.toLowerCase()==='mathefs@gmail.com'){
-    $('authMsg').textContent='Acesso liberado para '+session.user.email+'.';
-    $('sendLink').textContent='Acesso confirmado';
-    $('sendLink').disabled=true;
-    setTimeout(()=>$('auth').classList.remove('show'),900);
-   }
-  });
- }
- return supabaseClient;
-}
-function openTeamLogin(message){
- $('auth').classList.add('show');
- $('sendLink').disabled=true;
- $('sendLink').textContent='Conectando ao login...';
- $('authMsg').textContent=message||'Preparando o acesso seguro da equipe...';
- ensureSupabase().then(()=>{
-  $('sendLink').disabled=!!team;
-  $('sendLink').textContent=team?'Acesso confirmado':'Enviar link de acesso';
-  if(!team)$('authMsg').textContent=message||'Envie um link de acesso para o e-mail autorizado.';
- }).catch(error=>{
-  $('sendLink').disabled=false;
-  $('sendLink').textContent='Tentar novamente';
-  $('authMsg').textContent='Falha ao iniciar o login: '+(error?.message||'erro desconhecido');
- });
-}
 function updateStats(){
  $('total').textContent=points.length;
  $('priority').textContent=points.filter(p=>p.priority==='cliente').length;
@@ -293,17 +238,17 @@ function renderModal(){
  const completedText=p.completed_at?'Concluído em '+new Date(p.completed_at).toLocaleString('pt-BR')+' · por '+(p.completed_by||'equipe'):'';
  $('captureMeta').textContent=[capturedText,completedText].filter(Boolean).join(' | ');
  $('modalNotes').value=p.notes||'';
- $('modalNotes').readOnly=!team;
- $('modalNotes').placeholder=team?'Condições de acesso, melhor ângulo, obstáculos, orientação de captação...':'Entre como equipe para registrar observações de campo.';
- $('notesActions').style.display=team?'flex':'none';
- $('captureActions').style.display=team?'flex':'none';
+ $('modalNotes').readOnly=false;
+ $('modalNotes').placeholder='Condições de acesso, melhor ângulo, obstáculos, orientação de captação...';
+ $('notesActions').style.display='flex';
+ $('captureActions').style.display='flex';
  $('startCapture').style.display=(st==='em_captacao'||st==='concluido')?'none':'inline-flex';
  $('checkinCapture').textContent=(st==='capturado'||st==='revisado'||st==='concluido')?'✓ Captação registrada':'✓ Confirmar painel captado';
  $('checkinCapture').disabled=st==='capturado'||st==='revisado'||st==='concluido';
  $('checkinCapture').style.display=st==='concluido'?'none':'inline-flex';
  $('completePoint').textContent=st==='concluido'?'✓ Ponto concluído':'Concluir painel · envie o frame final';
  $('completePoint').disabled=st==='concluido'||!(p.media||[]).some(m=>m.kind==='final_frame');
- $('modalFootnote').textContent=team?'A alteração é salva na base e registrada no histórico da equipe.':'Visualização do cliente. A equipe pode registrar check-in e observações após entrar.';
+ $('modalFootnote').textContent='Edição liberada pelo link compartilhado. Alterações são registradas no histórico.';
  setReference(p);
  renderMedia(p);
  $('modalGoogleLink').href=google(p);
@@ -319,28 +264,26 @@ function renderMedia(p){
  $('finalFrameGallery').innerHTML=finals.length?'<a class="media-thumb" href="'+esc(finals[0].url)+'" target="_blank" rel="noopener"><img src="'+esc(finals[0].url)+'" alt="Frame final do take"><span>'+esc(finals[0].filename||'Frame final')+'</span></a>':'<div class="media-empty">O frame final ainda não foi enviado.</div>';
  $('referenceUploadControl').style.display='block';
  $('finalFrameUploadControl').style.display='block';
- $('referenceUploadButton').textContent=team?'＋ Adicionar fotos de referência':'Entrar como equipe para adicionar fotos';
- $('finalFrameUploadButton').textContent=team?'＋ Enviar frame captado':'Entrar como equipe para enviar o frame';
- $('referenceMediaInput').disabled=!team;
- $('finalFrameInput').disabled=!team;
- $('completePoint').disabled=!team||p.status==='concluido'||finals.length===0;
+ $('referenceUploadButton').textContent='＋ Adicionar fotos de referência';
+ $('finalFrameUploadButton').textContent='＋ Enviar frame captado';
+ $('referenceMediaInput').disabled=false;
+ $('finalFrameInput').disabled=false;
+ $('completePoint').disabled=p.status==='concluido'||finals.length===0;
 }
 async function uploadPointMedia(pointId,file,kind){
  const statusId=kind==='reference'?'referenceUploadStatus':'finalFrameUploadStatus';
  try{
-  const sb=await ensureSupabase();
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session){$('auth').classList.add('show');return false}
   if(!file||!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Use JPG, PNG ou WebP.');
   if(file.size>12*1024*1024)throw Error('A imagem deve ter até 12 MB.');
   $(statusId).textContent='Enviando '+file.name+'...';
   const form=new FormData();
   form.set('point_id',pointId);
+  form.set('share_token',token);
   form.set('media_kind',kind);
   form.set('file',file);
   const response=await fetch(URL+'/functions/v1/miller-media',{
    method:'POST',
-   headers:{'Authorization':'Bearer '+session.access_token,'apikey':KEY},
+   headers:{'apikey':KEY},
    body:form
   });
   const data=await response.json();
@@ -374,14 +317,10 @@ function choose(id,pan=true){
 }
 async function updatePoint(point_id,patch,{jumpToCaptured=false}={}){
  try{
-  const sb=await ensureSupabase();
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session){$('auth').classList.add('show');return false}
-  if(session.user?.email?.toLowerCase()!=='mathefs@gmail.com'){setTeamMode(false);throw Error('Acesso não autorizado.')}
   const r=await fetch(URL+'/functions/v1/miller-team-update',{
    method:'POST',
-   headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':KEY},
-   body:JSON.stringify({point_id,...patch})
+   headers:{'Content-Type':'application/json','apikey':KEY},
+   body:JSON.stringify({share_token:token,point_id,...patch})
   });
   const d=await r.json();if(!r.ok)throw Error(d.error||'Falha ao salvar');
   const p=points.find(x=>x.id===point_id);if(p)Object.assign(p,d.point);
@@ -403,9 +342,7 @@ $('fitBtn').onclick=fit;
 $('closeDetails').onclick=e=>{e.preventDefault();$('details').classList.remove('show')};
 $('closePointModal').onclick=closeModal;
 $('pointModal').addEventListener('click',e=>{if(e.target.hasAttribute('data-close-modal'))closeModal()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();$('auth').classList.remove('show')}});
-$('teamBtn').onclick=()=>openTeamLogin();
-$('closeAuth').onclick=()=>$('auth').classList.remove('show');
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 $('startCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'em_captacao'});if(ok)renderModal()};
 $('checkinCapture').onclick=async()=>{const ok=await updatePoint(selected,{status:'capturado'},{jumpToCaptured:true});if(ok)renderModal()};
 $('completePoint').onclick=async()=>{
@@ -414,14 +351,8 @@ $('completePoint').onclick=async()=>{
  const ok=await updatePoint(selected,{status:'concluido'},{jumpToCaptured:true});
  if(ok)renderModal();
 };
-$('referenceUploadButton').onclick=()=>{
- if(!team){openTeamLogin('Entre com o e-mail autorizado para liberar o envio de fotos.');return}
- $('referenceMediaInput').click();
-};
-$('finalFrameUploadButton').onclick=()=>{
- if(!team){openTeamLogin('Entre com o e-mail autorizado para enviar o frame final.');return}
- $('finalFrameInput').click();
-};
+$('referenceUploadButton').onclick=()=>$('referenceMediaInput').click();
+$('finalFrameUploadButton').onclick=()=>$('finalFrameInput').click();
 $('referenceMediaInput').onchange=e=>selected&&uploadMany(selected,e.target.files,'reference');
 $('finalFrameInput').onchange=e=>selected&&e.target.files?.[0]&&uploadMany(selected,[e.target.files[0]],'final_frame');
 $('saveNotes').onclick=async()=>{const ok=await updatePoint(selected,{notes:$('modalNotes').value});if(ok){$('modalFootnote').textContent='Observação salva e registrada no histórico.';renderModal()}};
@@ -435,36 +366,13 @@ async function load(){
   $('pointList').innerHTML='<div class="empty">Falha ao carregar pontos: '+esc(e.message)+'<br><button class="btn" onclick="location.reload()" style="margin-top:10px">Tentar novamente</button></div>';
  }
 }
-$('sendLink').onclick=async()=>{
- const button=$('sendLink');
- button.disabled=true;button.textContent='Enviando...';
- $('authMsg').textContent='Solicitando link de acesso...';
- try{
-  const sb=await ensureSupabase();
-  const callback=new URL('https://miller-ooh-curitiba-faw-digital.vercel.app/');
-  callback.searchParams.set('token',token);
-  callback.searchParams.set('team','1');
-  const {error}=await sb.auth.signInWithOtp({
-   email:'mathefs@gmail.com',
-   options:{shouldCreateUser:false,emailRedirectTo:callback.toString()}
-  });
-  if(error)throw error;
-  $('authMsg').textContent='Link enviado para mathefs@gmail.com. Abra a mensagem no mesmo navegador em que a plataforma está aberta. Confira também Spam e Promoções.';
-  button.textContent='Enviar novamente';
- }catch(e){
-  $('authMsg').textContent='Não foi possível enviar o link: '+(e?.message||'erro desconhecido');
-  button.textContent='Tentar novamente';
- }finally{
-  button.disabled=false;
- }
-};
 function startMap(){
  if(!window.L){$('map').innerHTML='<div class="empty">O mapa não carregou. A lista e os filtros continuam disponíveis.</div>';return}
  map=L.map('map',{zoomControl:true}).setView([-25.438,-49.275],12);
  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(map);
  map.whenReady(()=>{map.invalidateSize();if(points.length)fit()});
 }
-startMap();load();ensureSupabase().catch(()=>{});
+team=true;startMap();load();
 window.addEventListener('resize',()=>map&&map.invalidateSize());
 
 </script></body></html>
